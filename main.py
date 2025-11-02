@@ -1,8 +1,9 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
+load_dotenv(".env")
+from routes import base
+
 app=FastAPI()
 
-@app.get("/welcom")
-def welcom():
-    return{
-        "message":"welcom to fastapi"
-    }
+app.include_router(base.base_router)
+

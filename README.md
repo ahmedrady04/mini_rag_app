@@ -26,7 +26,7 @@ export PS1="\[\033[01;32m\]\u@\h: \w\n\[\033[00m\]\$"
 ### INSTALL REQUIRED PACHAGE 
 
 ```bash
-$  pip install -r requirements.
+$  pip install -r requirements.txt
 ```
 ### setup the enviroment varibles
 
