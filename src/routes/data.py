@@ -6,6 +6,12 @@ from controllers import DataController
 from controllers import ProjectController
 from aiofile import async_open
 from models import ResponseSignal
+import logging
+
+logger = logging.getLogger("uvicorn.error")
+
+
+
 data_router = APIRouter(
     prefix="/api/v1/data",
     tags=["api/v1","data"],
@@ -17,8 +23,8 @@ async def upload_data(project_id:str,file:UploadFile,
 
 
   #validate the file properties
- 
-  is_valid ,result_signal =DataController().validate_uploaded_file(file=file)
+  data_controller=DataController()
+  is_valid ,result_signal =data_controller.validatje_uploaded_file(file=file)
 
   if not is_valid:
       return JSONResponse(
@@ -29,19 +35,34 @@ async def upload_data(project_id:str,file:UploadFile,
           }
       )
 
-      project_dir_path=ProjectController().get_project_directory(project_id=project_id)
-        file_path = os.path.join(
-            project_dir_path,
-            file.filename, 
+  project_dir_path=ProjectController().get_project_directory(project_id=project_id)
+  file_path, file_id = data_controller.generate_unique_filepath(
+        original_filename=file.filename,
+        project_id=project_id
+    )
+  try:
+    async with async_open(file_path,'wb') as out_file:
+       while (chunk:=await file.read(app_setting.FILE_DEFAULT_CHUNK_SIZE)):
+         await out_file.write(chunk)
+
+  except Exception as e:
+
+        logger.error(f"Error while uploadaing file : {e}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "status":"failed",
+                "signal":ResponseSignal.FILE_UPLOAD_FAILED.value,
+                "error":str(e)
+            }
         )
 
-       async with aiofiles.open(file_path,'wb') as out_file:
-        while :chunk:=await file.read(app_setting.FILE_DEFAULT_CHUNK_SIZE):
-            await out_file.write(chunk)
-       return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content={
-            "status":"success",
-            "signal":ResponseSignal.FILE_UPLOAD_SUCCESS.value,
-        }
-       )
+
+  return JSONResponse(
+    status_code=status.HTTP_200_OK,
+    content={
+        "status":"success",
+        "signal":ResponseSignal.FILE_UPLOAD_SUCCESS.value,
+        "file_id":file_id
+    }
+   )
