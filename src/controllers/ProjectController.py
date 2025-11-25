@@ -1,6 +1,6 @@
 from .BaseController import BaseController 
 from fastapi import UploadFile
-from models.enums import ResponseSignal
+from models import ResponseSignal
 import os 
 
 class ProjectController(BaseController):
