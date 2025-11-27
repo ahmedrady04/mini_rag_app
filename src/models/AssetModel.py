@@ -57,6 +57,7 @@ class AssetModel(BaseDataModel):
             return Asset(**record)
         
         return None
+    
 
 
     

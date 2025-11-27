@@ -12,6 +12,7 @@ from models.ChunkModel import ChunkModel
 from models.AssetModel import AssetModel
 from models.db_schemes import DataChunk, Asset
 from models import AssetTypeEnum
+from models import ProcessingEnum
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -196,7 +197,7 @@ async def process_endpoint(request: Request, project_id: str, process_request: P
             for i, chunk in enumerate(file_chunks)
         ]
 
-        no_records += await chunk_model.insert_many_chunks(chunks=file_chunks_records)
+        no_records += await chunk_model.insert_many_chunk(chunks=file_chunks_records)
         no_files += 1
 
     return JSONResponse(
