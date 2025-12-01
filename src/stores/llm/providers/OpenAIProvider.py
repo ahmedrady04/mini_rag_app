@@ -73,14 +73,14 @@ def embed_text(self,text:str,document_type:str=None):
         if not self.embedding_model_id:
             self.logger.error("Embedding model is not set.")   
             return None
-        if not responce or responce.data or len(responce.data)==0, or not responce.data[0].embedding:
-            self.logger.error("Failed to get embedding from OpenAI.")
-            return None
         
         responce=self.client.embeddings.create(
             input=text,
             model=self.embedding_model_id
         )
+        if not responce or responce.data or len(responce.data)==0, or not responce.data[0].embedding:
+            self.logger.error("Failed to get embedding from OpenAI.")
+            return None
         return responce.data[0].embedding
 
 def construct_prompt(self,prompt:str,role:str):
