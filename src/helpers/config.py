@@ -4,6 +4,7 @@ class Settings(BaseSettings):
     
     APP_NAME:str
     VERSION:str
+
     OPENAI_API_KEY:str
     FILE_ALLOWED_TYPES:list
     FILE_MAX_SIZE:int
@@ -32,6 +33,9 @@ class Settings(BaseSettings):
     VECTOR_DB_BACKEND:str
     VECTOR_DB_PATH:str
     VECTOR_DB_DISTANCE_METHOD:str
+
+    PRIMARY_LANG :str 
+    DEFAULT_LANG :str
 
     class Config:
       env_file = ".env"

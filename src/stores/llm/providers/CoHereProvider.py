@@ -1,3 +1,4 @@
+from urllib import response
 import cohere
 from ..LLMInterface import LLMInterface
 from ..LLMEnum import CohereEnum, DocumentTypeEnum
@@ -19,7 +20,9 @@ class CoHereProvider(LLMInterface):
         self.embedding_model_id=None
         self.embedding_size=None
 
-        self.client=cohere.ClientV2(
+        self.enum=CohereEnum
+
+        self.client=cohere.Client(
             api_key=self.apikey,
         )
 
@@ -48,16 +51,16 @@ class CoHereProvider(LLMInterface):
         if not self.generation_model_id:
             self.logger.error("Generation model is not set.")   
             return None
+        
         max_output_tokens=max_output_tokens if max_output_tokens else self.default_generation_output_max_tokens
         temperature=temperature if temperature else self.default_temperature
 
         
         responce=self.client.chat(
             model=self.generation_model_id,
-            chat_history=chat_history,
+            message=self.process_text(prompt),  # ✅ Correct: 'message' not 'messages'
             max_tokens=max_output_tokens,
-            temperature=temperature,
-            messages=self.process_text(prompt)
+            temperature=temperature
         )
 
         if not responce or not responce.text:
@@ -89,8 +92,8 @@ class CoHereProvider(LLMInterface):
             embedding_types=["float"]
         )
 
-        if not responce or not responce.embeddings or len(responce.embeddings)==0 or not responce.embeddings[0]:
-            self.logger.error("No response from Cohere embedding.")
+        if not responce or not responce.embeddings or not responce.embeddings.float:
+            self.logger.error("Error while embedding text with CoHere")
             return None
         
         return responce.embeddings.float[0]

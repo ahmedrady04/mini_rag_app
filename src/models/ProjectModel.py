@@ -58,14 +58,14 @@ class ProjectModel(BaseDataModel):
 
         total_pages=total_documents//page_size
         if total_documents % page_size >0 : 
-          total_pages +=1
+            total_pages +=1
 
-          cursor= await self.collection.find().skip((page-1)*page_size).limit(page_size)
-          projects=[]
-          async for documents in cursor:
-              projects.append(
-                  Project(**documents)
-               )
+            cursor= await self.collection.find().skip((page-1)*page_size).limit(page_size)
+            projects=[]
+            async for documents in cursor:
+                projects.append(
+                    Project(**documents)
+                )
         return projects,total_pages
 
 
