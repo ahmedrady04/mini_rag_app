@@ -6,6 +6,6 @@ class VectorDBEnum(Enum):
     WEAVIATE="weaviate"
 
 class DistanceMethodEnum(Enum):
-    COSINE="cosine"
+    COSINE="COSINE"
     EUCLIDEAN="euclidean"
     DOT="dot"

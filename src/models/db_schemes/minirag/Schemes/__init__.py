@@ -1,0 +1,1 @@
+from .minirag_base import SqlAlchemyBase

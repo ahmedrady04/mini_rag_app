@@ -4,6 +4,7 @@ class LLMEnum(Enum):
     OPENAI="openai"
     COHERE="cohere"
 
+
 class OpenAIEnum(Enum):
     SYSTEM="system"
     USER="user"
